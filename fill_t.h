@@ -12,7 +12,12 @@ class fill_t {
 	color_t color_2;
 
 	void draw() {
-		
+		if (mode == solid) {
+
+		}
+		else if (mode == checkerboard) {
+
+		}
 	}
 };
 

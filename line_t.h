@@ -22,10 +22,7 @@ public:
 		v0.y = y0;
 		v1.x = x1;
 		v1.y = y1;
-
-		cout << v0.x << " " << v0.y << endl;
 		color = c;
-		// cout << (int)c.red << " " << (int)c.green << " " << (int)c.blue << endl;
 	}
 
 	line_t(point_t p0, point_t p1, color_t c) {

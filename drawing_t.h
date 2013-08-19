@@ -7,8 +7,13 @@
 #include "polygon_t.h"
 
 class drawing_t {
-	void draw() {
+public:
+	list<line_t> lines;
+	list<polygon_t> polygons;
 
+	void draw() {
+		for (auto itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw();
+		for (auto itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw();
 	}
 
 	void save() {
