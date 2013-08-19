@@ -1,3 +1,6 @@
+#ifndef _CANVAS_T_H_
+#define _CANVAS_T_H_
+
 #include "drawing_t.h"
 #include "color_t.h"
 
@@ -13,4 +16,6 @@ public:
 	void clear() {
 
 	}
-}
+};
+
+#endif
