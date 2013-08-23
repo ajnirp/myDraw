@@ -2,7 +2,7 @@
 #define _POINT_T_H_
 
 #include "color_t.h"
-#include <GL/glut.h>
+#include <GLUT/glut.h>
 
 #include <iostream>
 using namespace std;

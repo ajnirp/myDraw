@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "required.h"
-#include <GL/glut.h>
+#include <GLUT/glut.h>
 
 using namespace std;
 
@@ -11,6 +11,8 @@ int win_height = 768;
 
 canvas_t canvas;
 bool canvas_exists = false;
+
+void reshape(int w, int h);
 
 void make_new_canvas() {
 	if (!canvas_exists) {
@@ -25,6 +27,9 @@ void make_new_canvas() {
 		color_t bg_c(r, g, b);
 		canvas.set(w, h, bg_c, NULL);
 		canvas_exists = true;
+		//reshape(w,h);
+		glutReshapeWindow(w,h);
+		glutPostRedisplay();
 
 		cout << "Initialized new canvas\n";
 	}
@@ -39,6 +44,8 @@ void display(void) {
 	// line_t l(500, 200, 600, 100, c);
 	// l.draw();
 
+	//cout<<glGetString(GL_VERSION)<<endl;
+	
 	point_t p0(100, 100);
 	point_t p1(200, 200);
 	point_t p2(300, 150);
@@ -106,6 +113,8 @@ int main(int argc, char* argv[]) {
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyboard);
 	glutMouseFunc(mouse);
+
+
 
 	glutMainLoop();
 	return 0;
