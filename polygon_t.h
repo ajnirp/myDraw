@@ -16,7 +16,7 @@ public:
 
 	polygon_t(list<point_t> vs, color_t bc) {
 		border_color = bc;
-		for (auto itr = vs.begin() ; itr != vs.end() ; itr++) {
+		for (list<point_t>::iterator itr = vs.begin() ; itr != vs.end() ; itr++) {
 			point_t vertex(itr->x, itr->y);
 			vertices.push_back(vertex);
 		}

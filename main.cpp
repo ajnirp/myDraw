@@ -6,11 +6,19 @@
 
 using namespace std;
 
+/* Global vars */
 int win_width = 1024;
 int win_height = 768;
 
-canvas_t canvas;
+canvas_t* canvas = NULL;
 bool canvas_exists = false;
+
+/* Function declarations */
+void make_new_canvas();
+void display(void);
+void reshape(int, int);
+void keyboard(unsigned char, int, int);
+void mouse(int, int, int, int);
 
 void make_new_canvas() {
 	if (!canvas_exists) {
@@ -23,8 +31,18 @@ void make_new_canvas() {
 		int g; cout << "\tG: "; cin >> g;
 		int b; cout << "\tB: "; cin >> b;
 		color_t bg_c(r, g, b);
-		canvas.set(w, h, bg_c, NULL);
+
+		canvas = new canvas_t(w, h, bg_c, NULL);
+
+		// canvas.set(w, h, bg_c, NULL);
 		canvas_exists = true;
+
+		// resize the window
+		glutReshapeWindow(w, h);
+		glutPostRedisplay();
+
+		glClearColor(r/255.0, g/255.0, b/255.0, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		cout << "Initialized new canvas\n";
 	}
@@ -35,22 +53,9 @@ void make_new_canvas() {
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
-	// color_t c(255, 255, 255);
-	// line_t l(500, 200, 600, 100, c);
-	// l.draw();
+	/* Test code here */
 
-	point_t p0(100, 100);
-	point_t p1(200, 200);
-	point_t p2(300, 150);
-
-	list<point_t> points;
-	points.push_back(p0);
-	points.push_back(p1);
-	points.push_back(p2);
-
-	color_t white(255, 255, 255);
-	polygon_t poly(points, white);
-	poly.draw();
+	// cout << glGetString(GL_VERSION) << endl;
 
 	if (canvas_exists) {
 	}
@@ -84,7 +89,6 @@ void keyboard(unsigned char key, int x, int y) {
 				cerr << "No canvas to draw on! Make a new canvas by pressing 'n'.\n";
 			}
 			else {
-
 			}
 		}
 		break;
