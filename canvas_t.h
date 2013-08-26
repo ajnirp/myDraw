@@ -17,6 +17,7 @@ public:
 		width = w;
 		height = h;
 
+		// Allocate memory for the array and clear it
 		array = new color_t*[width];
 		for (int i = 0 ; i < width ; i++) array[i] = new color_t[height];
 		clear();

@@ -1,19 +1,25 @@
+#ifndef _PEN_T_H_
+#define _PEN_T_H_
+
 #include "color_t.h"
 
-enum pen_mode {
-	pen = 0, //draw with the current pen color
-	eraser = 1 // draw with the color of the background
-};
-
 class pen_t {
-private:
-	int size; // thickness of the pen line
+public:
+	float size; // thickness of the pen line
 	color_t color;
 
-public:
-	pen_mode mode;
-	pen_t(int s, pen_mode p_mode = pen) {
+	bool eraser;
+
+	pen_t() {
+		color_t black(0, 0, 0);
+		pen_t(black, 1, false);
+	}
+
+	pen_t(color_t c, float s = 1.0, bool er = false) {
+		color = c;
 		size = s;
-		mode = p_mode;
+		eraser = er;
 	}
 };
+
+#endif

@@ -1,21 +1,19 @@
 #ifndef _FILL_T_H_
 #define _FILL_T_H_
 
-enum fill_mode {
-	solid = 0,
-	checkerboard = 1
-};
-
 class fill_t {
-	fill_mode mode;
-	color_t color_1;
-	color_t color_2;
+	bool checker_mode;
 
-	void draw() {
-		if (mode == solid) {
+	fill_t(bool ch_mode, color_t col_1, color_t col_2) {
+		
+	}
+
+	// start = point where user clicked. The fill begins from there
+	void draw(point_t start) {
+		if (checker_mode) {
 
 		}
-		else if (mode == checkerboard) {
+		else {
 
 		}
 	}

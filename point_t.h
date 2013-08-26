@@ -1,6 +1,7 @@
 #ifndef _POINT_T_H_
 #define _POINT_T_H_
 
+#include "pen_t.h"
 #include "color_t.h"
 #include <GL/glut.h>
 
@@ -22,12 +23,12 @@ public:
 		y = yy;
 	}
 
-	void draw(color_t color) {
-		glPointSize(1.0);
+	void draw(pen_t pen) {
+		glPointSize(pen.size);
 
-		float red = (float)(color.red) / 255;
-		float green = (float)(color.green) / 255;
-		float blue = (float)(color.blue) / 255;
+		float red = (float)(pen.color.red) / 255;
+		float green = (float)(pen.color.green) / 255;
+		float blue = (float)(pen.color.blue) / 255;
 
 		glColor3f(red, green, blue);
 		glBegin(GL_POINTS);

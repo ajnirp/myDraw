@@ -16,10 +16,11 @@ public:
 
 	polygon_t(list<point_t> vs, color_t bc) {
 		border_color = bc;
-		for (list<point_t>::iterator itr = vs.begin() ; itr != vs.end() ; itr++) {
-			point_t vertex(itr->x, itr->y);
-			vertices.push_back(vertex);
-		}
+		// for (list<point_t>::iterator itr = vs.begin() ; itr != vs.end() ; itr++) {
+		// 	point_t vertex(itr->x, itr->y);
+		// 	vertices.push_back(vertex);
+		// }
+		vertices = vs;
 	}
 
 	void set_fill_color(color_t fc) {

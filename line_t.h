@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include "point_t.h"
+#include "pen_t.h"
 #include "color_t.h"
 
 class line_t {
@@ -15,20 +16,22 @@ public:
 	point_t v0;
 	point_t v1;
 
+	pen_t pen;
+
 	color_t color;
 
-	line_t(int x0, int y0, int x1, 	int y1, color_t c) {
+	line_t(int x0, int y0, int x1, 	int y1, pen_t p) {
 		v0.x = x0;
 		v0.y = y0;
 		v1.x = x1;
 		v1.y = y1;
-		color = c;
+		pen = p;
 	}
 
-	line_t(point_t p0, point_t p1, color_t c) {
+	line_t(point_t p0, point_t p1, pen_t p) {
 		v0 = p0;
 		v1 = p1;
-		color = c;
+		pen = p;
 	}
 
 	void draw() {
@@ -59,11 +62,11 @@ public:
 		for (int x=x0; x < x1; x++) {
 			if (steep) {
 				point_t p(y, x);
-				p.draw(color);
+				p.draw(pen);
 			}
 			else {
 				point_t p(x, y);
-				p.draw(color);
+				p.draw(pen);
 			}
 
 

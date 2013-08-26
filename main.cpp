@@ -22,24 +22,13 @@ void mouse(int, int, int, int);
 
 void make_new_canvas() {
 	if (!canvas_exists) {
-		cout << "Making a new canvas. Enter details:\n";
-		int w; cout << "\tCanvas width: "; cin >> w;
-		int h; cout << "\tCanvas height: "; cin >> h;
-
-		cout << "Enter RGB for background color (0-255):\n";
-		int r; cout << "\tR: "; cin >> r;
-		int g; cout << "\tG: "; cin >> g;
-		int b; cout << "\tB: "; cin >> b;
+		cout << "Making a new canvas. Enter RGB for background color (0-255):\n";
+		int r; cout << "red:   "; cin >> r;
+		int g; cout << "green: "; cin >> g;
+		int b; cout << "blue:  "; cin >> b;
 		color_t bg_c(r, g, b);
 
-		canvas = new canvas_t(w, h, bg_c, NULL);
-
-		// canvas.set(w, h, bg_c, NULL);
 		canvas_exists = true;
-
-		// resize the window
-		glutReshapeWindow(w, h);
-		glutPostRedisplay();
 
 		glClearColor(r/255.0, g/255.0, b/255.0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -54,8 +43,7 @@ void make_new_canvas() {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	/* Test code here */
-
-	// cout << glGetString(GL_VERSION) << endl;
+	
 
 	if (canvas_exists) {
 	}
@@ -89,6 +77,7 @@ void keyboard(unsigned char key, int x, int y) {
 				cerr << "No canvas to draw on! Make a new canvas by pressing 'n'.\n";
 			}
 			else {
+				cout << "Initialized new drawing\n";
 			}
 		}
 		break;
@@ -100,6 +89,10 @@ void keyboard(unsigned char key, int x, int y) {
 void mouse(int button, int state, int x, int y) {}
 
 int main(int argc, char* argv[]) {
+	cout << "Enter window dimensions:\n";
+	cout << "Width: "; cin >> win_width;
+	cout << "Height: "; cin >> win_height;
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
 	glutInitWindowSize(win_width, win_height);

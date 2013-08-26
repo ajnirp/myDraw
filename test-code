@@ -1,5 +1,6 @@
 color_t c(255, 255, 255);
-line_t l(500, 200, 600, 100, c);
+pen_t pen(c, 12.0);
+line_t l(500, 200, 600, 100, pen);
 l.draw();
 
 ---
@@ -16,3 +17,7 @@ points.push_back(p2);
 color_t white(255, 255, 255);
 polygon_t poly(points, white);
 poly.draw();
+
+---
+
+cout << glGetString(GL_VERSION) << endl;
