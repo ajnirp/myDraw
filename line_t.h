@@ -18,7 +18,8 @@ public:
 
 	pen_t pen;
 
-	color_t color;
+	line_t() {
+	}
 
 	line_t(int x0, int y0, int x1, 	int y1, pen_t p) {
 		v0.x = x0;
@@ -34,7 +35,24 @@ public:
 		pen = p;
 	}
 
+	void set_points(point_t p0, point_t p1) {
+		v0 = p0;
+		v1 = p1;
+	}
+
+	void set_xy(int x0, int y0, int x1, int y1) {
+		v0.x = x0;
+		v0.y = y0;
+		v1.x = x1;
+		v1.y = y1;
+	}
+
+	void set_pen(pen_t p) {
+		pen = p;
+	}
+
 	void draw() {
+		// cout << "drawing\n";
 		int x0 = v0.x;
 		int y0 = v0.y;
 		int x1 = v1.x;
@@ -68,7 +86,6 @@ public:
 				point_t p(x, y);
 				p.draw(pen);
 			}
-
 
 			error = error + deltay;
 			if ( (error << 1) >= deltax) {

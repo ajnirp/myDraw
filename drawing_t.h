@@ -11,6 +11,9 @@ public:
 	list<line_t> lines;
 	list<polygon_t> polygons;
 
+	drawing_t() {
+	}
+
 	void draw() {
 		for (list<line_t>::iterator itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw();
 		for (list<polygon_t>::iterator itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw();

@@ -23,6 +23,12 @@ public:
 		y = yy;
 	}
 
+	void set(int xx, int yy) {
+		// cout << "setting\n";
+		x = xx;
+		y = yy;
+	}
+
 	void draw(pen_t pen) {
 		glPointSize(pen.size);
 

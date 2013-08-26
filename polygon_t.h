@@ -14,6 +14,9 @@ public:
 	color_t border_color;
 	color_t fill_color;
 
+	polygon_t() {
+	}
+
 	polygon_t(list<point_t> vs, color_t bc) {
 		border_color = bc;
 		// for (list<point_t>::iterator itr = vs.begin() ; itr != vs.end() ; itr++) {
