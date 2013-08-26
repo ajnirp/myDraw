@@ -12,17 +12,14 @@ public:
 
 	bool filled;
 	color_t border_color;
+	pen_t border;
 	color_t fill_color;
 
 	polygon_t() {
 	}
 
-	polygon_t(list<point_t> vs, color_t bc) {
-		border_color = bc;
-		// for (list<point_t>::iterator itr = vs.begin() ; itr != vs.end() ; itr++) {
-		// 	point_t vertex(itr->x, itr->y);
-		// 	vertices.push_back(vertex);
-		// }
+	polygon_t(list<point_t> vs, pen_t brdr) {
+		border = brdr;
 		vertices = vs;
 	}
 

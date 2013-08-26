@@ -8,16 +8,18 @@
 using namespace std;
 
 /* Global vars */
-int win_width = 1024;
-int win_height = 768;
+int win_width;
+int win_height;
+int window_id;
 bool line_drawing_mode = true;
 bool fill_mode = false;
-int window_id;
 
-line_t curr_line;
 int num_points = 0;
 point_t first_point;
-polygon_t curr_poly;
+list<point_t> polygon_points;
+
+color_t black(0, 0, 0);
+pen_t pen(black, 1, false);
 
 canvas_t* canvas = NULL;
 
@@ -70,13 +72,6 @@ void load_drawing() {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	/* Test code here */
-	// color_t c(255, 255, 255);
-	// pen_t pen(c, 1.0);
-	// line_t l(200, 200, 300, 300, pen);
-	// l.draw();
-	if (canvas) {
-	}
-
 	glFlush();
 }
 
@@ -96,111 +91,121 @@ void reshape(int w, int h) {
 
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
+		// Create new canvas
+		case 'n': { make_new_canvas(); }
+		break;
 
-	// Create new canvas
-	case 'n': {
-		make_new_canvas();
-	}
-	break;
-
-	// Initialize new drawing
-	case 'd': {
-		if (!canvas) {
-			cerr << "ERROR: No canvas to draw on. Make a new canvas by pressing 'n'\n";
-		}
-		else {
-			if (canvas->drawing) {
-				canvas->drawing = NULL;
+		// Initialize new drawing
+		case 'd': {
+			if (!canvas) {
+				cerr << "ERROR: No canvas to draw on. Make a new canvas by pressing 'n'\n";
 			}
-			canvas->drawing = new drawing_t();
-			cout << "Initialized new drawing\n";
-		}
-	}
-	break;
-
-	// Save drawing
-	case 's': {
-		if (canvas and canvas->drawing) {
-			save_drawing();
-		}
-		else {
-			cerr << "ERROR: No canvas exists or no drawing has been initialized\n";
-		}
-	}
-	break;
-
-	// Load drawing
-	case 'l': {
-		if (canvas) {
-			if (canvas->drawing) {
-				cout << "Destroying current drawing... ";
-				canvas->drawing = NULL;
+			else {
+				if (canvas->drawing) {
+					canvas->drawing = NULL;
+				}
+				canvas->drawing = new drawing_t();
+				cout << "Initialized new drawing\n";
 			}
-			load_drawing();
 		}
-		else {
-			cerr << "ERROR: No canvas to load to. Make a new canvas by pressing 'n'\n";
+		break;
+
+		// Save drawing
+		case 's': {
+			if (canvas and canvas->drawing) {
+				save_drawing();
+			}
+			else {
+				cerr << "ERROR: No canvas exists or no drawing has been initialized\n";
+			}
 		}
-	}
-	break;
+		break;
 
-	//Toggle fill mode
-	case 'f': {
-		cout << "Fill mode turned " << (fill_mode ? "off" : "on") << "\n";
-		fill_mode = not fill_mode;
-	}
-	break;
-
-	// Toggle line drawing mode
-	case '1': {
-		if (canvas) {
-			line_drawing_mode = true;
-			cout << "Line drawing mode on\n";
+		// Load drawing
+		case 'l': {
+			if (canvas) {
+				if (canvas->drawing) {
+					cout << "Destroying current drawing... ";
+					canvas->drawing = NULL;
+				}
+				load_drawing();
+			}
+			else {
+				cerr << "ERROR: No canvas to load to. Make a new canvas by pressing 'n'\n";
+			}
 		}
-	}
-	break;
+		break;
 
-	// Toggle polygon drawing mode
-	case '2': {
-		if (canvas) {
-			line_drawing_mode = false;
-			cout << "Polygon drawing mode on\n";	
+		//Toggle fill mode
+		case 'f': {
+			cout << "Fill mode is now " << (fill_mode ? "off" : "on") << "\n";
+			fill_mode = not fill_mode;
 		}
-	}
-	break;
+		break;
 
-	// Exit the program using Esc
-	case 27: {
-		cout << "Exiting myDraw...\n";
-		glutDestroyWindow(window_id);
-		exit(0);
-	}
-	break;
+		// Toggle line drawing mode
+		case '1': {
+			if (canvas) {
+				if (canvas->drawing) {
+					// Draw the polygon, then clear polygon_points
+					polygon_t poly(polygon_points, pen);
+					poly.draw();
+					polygon_points.clear();
+					glFlush();
+				}
+				
+				line_drawing_mode = true;
+				cout << "Line drawing mode on\n";
+			}
+		}
+		break;
+
+		// Toggle polygon drawing mode
+		case '2': {
+			if (canvas) {
+				line_drawing_mode = false;
+				cout << "Polygon drawing mode on\n";	
+			}
+		}
+		break;
+
+		// Exit the program using Esc
+		case 27: {
+			cout << "Exiting myDraw...\n";
+			glutDestroyWindow(window_id);
+			exit(0);
+		}
+		break;
 
 	}
 }
 
 void mouse(int button, int state, int x, int y) {
-	if (state == GLUT_DOWN) {
-		if (button == GLUT_DOWN) {
-			cout << x << " " << y << "\n";
-			if (line_drawing_mode) {
-				if (num_points == 0) {
-					first_point.set(x, win_height-y);
-				}
-				else if (num_points == 1){
-					curr_line.set_xy(first_point.x, first_point.y, x, win_height-y);
-					color_t black(0, 0, 0);
-					pen_t p(black, 1.0, false);
-					curr_line.set_pen(p);
+	if (canvas and canvas->drawing) {
+		if (state == GLUT_DOWN) {
+			if (button == GLUT_DOWN) { // Line drawing mode active
+				if (line_drawing_mode) {
 
-						// cout << (int)curr_line.pen.color.red << "\n";
-						// cout << (int)curr_line.pen.color.green << "\n";
-						// cout << (int)curr_line.pen.color.blue << "\n";
 
-					curr_line.draw();
+					// Then get ready to draw lines
+					if (num_points == 0) {
+						first_point.set(x, win_height-y);
+					}
+					else if (num_points == 1){
+						line_t curr_line(first_point.x, first_point.y, x, win_height-y, pen);
+						curr_line.draw();
+					}
+					num_points = 1 - num_points;				
 				}
-				num_points = 1 - num_points;				
+				else { // Polygon drawing mode active
+					point_t clicked(x, win_height-y);
+					// if (polygon_points.size() >= 1) {
+					// 	point_t last_point = polygon_points.back();
+					// 	polygon_points.push_back(clicked);
+					// 	line_t recent(clicked, last_point, pen);
+					// 	recent.draw();
+					polygon_points.push_back(clicked);
+				}
 			}
 		}
 	}

@@ -24,7 +24,6 @@ public:
 	}
 
 	void set(int xx, int yy) {
-		// cout << "setting\n";
 		x = xx;
 		y = yy;
 	}
