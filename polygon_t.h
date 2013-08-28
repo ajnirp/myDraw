@@ -36,7 +36,6 @@ public:
 				point_t temp1(itr->x, itr->y);
 				itr++;
 				point_t temp2(itr->x, itr->y);
-				// cout << temp1.x << " " << temp1.y << endl;
 				line_t edge(temp1, temp2, border);
 				edge.draw(arr);
 			}

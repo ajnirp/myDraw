@@ -22,6 +22,7 @@ public:
 
 	void draw(pen_t** arr) {
 		cout << "Drawing directly\n";
+		// cout << "There are " << lines.size() << " lines\n";
 		for (list<line_t>::iterator itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw(arr);
 		for (list<polygon_t>::iterator itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw(arr);
 	}
@@ -30,8 +31,7 @@ public:
 		cout << "Drawing with array\n";
 		for (int x = 0 ; x < parent_canvas->width ; x++) {
 			for (int y = 0 ; y < parent_canvas->height ; y++) {
-				pen_t pen;
-				pen = arr[x][y];
+				pen_t pen = arr[x][y];
 
 				glPointSize(pen.size);
 

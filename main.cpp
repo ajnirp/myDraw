@@ -166,12 +166,11 @@ void keyboard(unsigned char key, int x, int y) {
 
 			if (fill_mode) {
 				canvas->drawing->draw_array(canvas->array);
-				glutPostRedisplay();
 			}
 			else {
 				canvas->drawing->draw(canvas->array);
-				glutPostRedisplay();
 			}
+			glFlush();
 		}
 		break;
 
