@@ -7,6 +7,10 @@ public:
 	unsigned char blue;
 	unsigned char green;
 
+	// int red;
+	// int green;
+	// int blue;
+
 	color_t() {
 		color_t(0, 0, 0);
 	}
@@ -16,6 +20,12 @@ public:
 		green = g;
 		blue = b;
 	}
+
+	// color_t(int r, int g, int b) {
+	// 	red = r;
+	// 	green = g;
+	// 	blue = b;
+	// }
 };
 
 #endif

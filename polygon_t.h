@@ -25,7 +25,7 @@ public:
 		fill_color = fc;
 	}
 
-	void draw(pen_t** arr) {
+	void draw(color_t** arr, int arr_w, int arr_h) {
 		int num_vertices = vertices.size();
 		if (num_vertices < 3) return;
 		else {
@@ -37,7 +37,7 @@ public:
 				itr++;
 				point_t temp2(itr->x, itr->y);
 				line_t edge(temp1, temp2, border);
-				edge.draw(arr);
+				edge.draw(arr, arr_w, arr_h);
 			}
 			vertices.pop_back();
 		}

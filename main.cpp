@@ -15,6 +15,7 @@ using namespace std;
 int win_width = 800;
 int win_height = 640;
 int window_id;
+
 // Drawing modes
 bool line_drawing_mode = true;
 bool fill_mode = false;
@@ -165,10 +166,10 @@ void keyboard(unsigned char key, int x, int y) {
 			fill_mode = not fill_mode;
 
 			if (fill_mode) {
-				canvas->drawing->draw_array(canvas->array);
+				canvas->drawing->draw_array();
 			}
 			else {
-				canvas->drawing->draw(canvas->array);
+				canvas->drawing->draw();
 			}
 			glFlush();
 		}
@@ -180,7 +181,7 @@ void keyboard(unsigned char key, int x, int y) {
 				if (canvas->drawing) {
 					// Draw the polygon, then clear polygon_points
 					polygon_t poly(polygon_points, pen);
-					poly.draw(canvas->array);
+					poly.draw(canvas->array, canvas->width, canvas->height);
 					polygon_points.clear();
 					glFlush();
 				}
@@ -249,7 +250,7 @@ void mouse(int button, int state, int x, int y) {
 					else if (num_points == 1) {
 						line_t curr_line(first_point.x, first_point.y, x, win_height-y, pen);
 						canvas->drawing->lines.push_back(curr_line);
-						curr_line.draw(canvas->array);
+						curr_line.draw(canvas->array, canvas->width, canvas->height);
 					}
 					num_points = 1 - num_points;				
 				}

@@ -20,24 +20,21 @@ public:
 		parent_canvas = pc;
 	}
 
-	void draw(pen_t** arr) {
+	void draw() {
 		cout << "Drawing directly\n";
-		// cout << "There are " << lines.size() << " lines\n";
-		for (list<line_t>::iterator itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw(arr);
-		for (list<polygon_t>::iterator itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw(arr);
+		for (list<line_t>::iterator itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw(parent_canvas->array, parent_canvas->width, parent_canvas->height);
+		for (list<polygon_t>::iterator itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw(parent_canvas->array, parent_canvas->width, parent_canvas->height);
 	}
 
-	void draw_array(pen_t** arr) {
+	void draw_array() {
 		cout << "Drawing with array\n";
 		for (int x = 0 ; x < parent_canvas->width ; x++) {
 			for (int y = 0 ; y < parent_canvas->height ; y++) {
-				pen_t pen = arr[x][y];
+				color_t col = parent_canvas->array[x][y];
 
-				glPointSize(pen.size);
-
-				float red = (float)(pen.color.red) / 255;
-				float green = (float)(pen.color.green) / 255;
-				float blue = (float)(pen.color.blue) / 255;
+				float red = (float)(col.red) / 255;
+				float green = (float)(col.green) / 255;
+				float blue = (float)(col.blue) / 255;
 
 				glColor3f(red, green, blue);
 				glBegin(GL_POINTS);

@@ -28,8 +28,8 @@ public:
 		y = yy;
 	}
 
-	void draw(pen_t pen, pen_t** arr) {
-		glPointSize(pen.size);
+	void draw(pen_t pen, color_t** arr, int arr_w, int arr_h) {
+		// glPointSize(pen.size);
 
 		float red = (float)(pen.color.red) / 255;
 		float green = (float)(pen.color.green) / 255;
@@ -37,10 +37,14 @@ public:
 
 		glColor3f(red, green, blue);
 		glBegin(GL_POINTS);
-		glVertex2f(x, y);
+		for (int xx = 0 ; xx < pen.size ; xx++) {
+			for (int yy = 0 ; yy < pen.size ; yy++) {
+				glVertex2f(x+xx, y+yy);
+				arr[x+xx][y+yy] = pen.color;
+			}
+		}
 		glEnd();
 
-		arr[x][y] = pen;
 	}
 };
 

@@ -51,7 +51,7 @@ public:
 		pen = p;
 	}
 
-	void draw(pen_t** arr) {
+	void draw(color_t** arr, int arr_w, int arr_h) {
 		int x0 = v0.x;
 		int y0 = v0.y;
 		int x1 = v1.x;
@@ -79,11 +79,11 @@ public:
 		for (int x=x0; x < x1; x++) {
 			if (steep) {
 				point_t p(y, x);
-				p.draw(pen, arr);
+				p.draw(pen, arr, arr_w, arr_h);
 			}
 			else {
 				point_t p(x, y);
-				p.draw(pen, arr);
+				p.draw(pen, arr, arr_w, arr_h);
 			}
 
 			error = error + deltay;
