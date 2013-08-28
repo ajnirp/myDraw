@@ -64,13 +64,43 @@ void make_new_canvas() {
 	}
 }
 
-void save_drawing() {
+// Save the drawing object pointed to by d
+// Assumes that d is a valid drawing, so it
+// does not error handle for the case when d
+// is NULL
+void save_drawing(drawing_t* d) {
 	cout << "Enter filename to save to (no spaces): ";
 	string filename; cin >> filename;
+	// add code to check for invalid filename characters like '/'
+	filename = "drawings/" + filename;
+	ofstream draw_file;
+	draw_file.open(filename.c_str());
+
+	// Save the lines
+	list<line_t>::iterator l_itr;
+	for (l_itr = d->lines.begin(); l_itr != d->lines.end(); l_itr++) {
+		draw_file << "L "
+		          << l_itr->v0.x << " "
+		          << l_itr->v0.y << " "
+		          << l_itr->v1.x << " "
+		          << l_itr->v1.y << " "
+		          << l_itr->pen.size << " "
+		          << (int)l_itr->pen.color.red << " "
+		          << (int)l_itr->pen.color.green << " "
+		          << (int)l_itr->pen.color.blue << "\n";
+	}
+
+	// Save the polygons
+	list<polygon_t>::iterator pgn_itr;
+	for (pgn_itr = d->polygons.begin(); pgn_itr != d->polygons.end(); pgn_itr++) {
+		
+	}
+
 	cout << "Saved to file '" << filename << "'\n";
 }
 
-void load_drawing() {
+// Load a drawing object into d
+void load_drawing(drawing_t* d) {
 	string filename;
 	cout << "Enter drawing file to load: ./drawings/";
 	cin >> filename;
@@ -137,7 +167,7 @@ void keyboard(unsigned char key, int x, int y) {
 		// Save drawing
 		case 's': {
 			if (canvas and canvas->drawing) {
-				save_drawing();
+				save_drawing(canvas->drawing);
 			}
 			else {
 				cerr << "ERROR: No canvas exists or no drawing has been initialized\n";
@@ -152,7 +182,7 @@ void keyboard(unsigned char key, int x, int y) {
 					cout << "Destroying current drawing... ";
 					canvas->drawing = NULL;
 				}
-				load_drawing();
+				load_drawing(canvas->drawing);
 			}
 			else {
 				cerr << "ERROR: No canvas to load to. Make a new canvas by pressing 'n'\n";

@@ -1,16 +1,1 @@
-1 Modify Makefile to respond to file change even if executable exists DONE
-
-2 How to draw lines with different widths (pass a different value to glPointSize)
-
-3 Plan for array
-
-When fill mode is on, check drawing member of canvas object and fill in the canvas array (first
-borders, then fills).
-Then refresh the window and display the array.
-When user clicks inside a polygon, change the array elements, refresh and display the array again
-
-When fill mode is off, refresh the window and display using the line and polygon draw methods
-
-(above idea is deprecated)
-
-Use 2D array to store all points where the user has clicked and with what color they have clicked. The 2D array is used only as a reference. It is never actually 'displayed'. When the user clicks on a point, we fill up the area and assign the corresponding elements of the 2D array the appropriate pixel colors.
+make changes to save_drawing and load_drawing to accomodate file names with spaces in them

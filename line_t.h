@@ -51,6 +51,10 @@ public:
 		pen = p;
 	}
 
+	// For the following function we modified the implementation
+	// of Bresenham's line drawing algorithm that was given
+	// as a demonstration
+	
 	void draw(color_t** arr, int arr_w, int arr_h) {
 		int x0 = v0.x;
 		int y0 = v0.y;
