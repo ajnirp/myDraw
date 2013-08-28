@@ -10,8 +10,6 @@ class polygon_t {
 public:
 	list<point_t> vertices;
 
-	bool filled;
-	color_t border_color;
 	pen_t border;
 	color_t fill_color;
 
@@ -27,7 +25,7 @@ public:
 		fill_color = fc;
 	}
 
-	void draw() {
+	void draw(pen_t** arr) {
 		int num_vertices = vertices.size();
 		if (num_vertices < 3) return;
 		else {
@@ -39,8 +37,8 @@ public:
 				itr++;
 				point_t temp2(itr->x, itr->y);
 				// cout << temp1.x << " " << temp1.y << endl;
-				line_t edge(temp1, temp2, border_color);
-				edge.draw();
+				line_t edge(temp1, temp2, border);
+				edge.draw(arr);
 			}
 			vertices.pop_back();
 		}

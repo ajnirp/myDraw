@@ -28,7 +28,7 @@ public:
 		y = yy;
 	}
 
-	void draw(pen_t pen) {
+	void draw(pen_t pen, pen_t** arr) {
 		glPointSize(pen.size);
 
 		float red = (float)(pen.color.red) / 255;
@@ -39,6 +39,8 @@ public:
 		glBegin(GL_POINTS);
 		glVertex2f(x, y);
 		glEnd();
+
+		arr[x][y] = pen;
 	}
 };
 

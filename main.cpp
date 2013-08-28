@@ -1,16 +1,21 @@
-#include <cmath>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <string>
-#include "required.h"
+#include <cmath>
 #include <GL/glut.h>
+
+#include "required.h"
 
 using namespace std;
 
 /* Global vars */
-int win_width;
-int win_height;
+
+// Window Parameters
+int win_width = 800;
+int win_height = 640;
 int window_id;
+// Drawing modes
 bool line_drawing_mode = true;
 bool fill_mode = false;
 
@@ -19,7 +24,8 @@ point_t first_point;
 list<point_t> polygon_points;
 
 color_t black(0, 0, 0);
-pen_t pen(black, 1, false);
+pen_t pen(black, 2, false);
+fill_t fill_object(black, false);
 
 canvas_t* canvas = NULL;
 
@@ -27,6 +33,7 @@ canvas_t* canvas = NULL;
 void make_new_canvas();
 void save_drawing();
 void load_drawing();
+color_t read_rgb();
 
 /* Callbacks */
 void display(void);
@@ -37,13 +44,13 @@ void mouse(int, int, int, int);
 /* Functions */
 void make_new_canvas() {
 	if (!canvas) {
-		cout << "Making a new canvas. Enter RGB for background color (0-255):\n";
-		int r; cout << "red:   "; cin >> r;
-		int g; cout << "green: "; cin >> g;
-		int b; cout << "blue:  "; cin >> b;
-		color_t bg_c(r, g, b);
+		color_t bg_c = read_rgb();
 
 		canvas = new canvas_t(win_width, win_height, bg_c, NULL);
+
+		int r = bg_c.red;
+		int g = bg_c.green;
+		int b = bg_c.blue;
 
 		glClearColor(r/255.0, g/255.0, b/255.0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -68,6 +75,22 @@ void load_drawing() {
 	cin >> filename;
 }
 
+color_t read_rgb() {
+	ifstream canvas_file("config/canvas.cfg");
+	string line;
+	int r, g, b;
+	if (canvas_file.is_open()) {
+		while (canvas_file.good()) {
+			getline(canvas_file, line);
+			if (line[0] == 'R') r = atoi(line.substr(2).c_str());
+			else if (line[0] == 'G') g = atoi(line.substr(2).c_str());
+			else if (line[0] == 'B') b = atoi(line.substr(2).c_str());
+		}
+	}
+	color_t bg_c(r, g, b);
+	return bg_c;
+}
+
 /* Callbacks */
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -80,8 +103,8 @@ void reshape(int w, int h) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glOrtho( 0.0, (GLdouble)w, 0.0, (GLdouble)h, -1., 1. );
-	glViewport( 0, 0, w, h );
+	glOrtho(0.0, (GLdouble)w, 0.0, (GLdouble)h, -1., 1.);
+	glViewport(0, 0, w, h);
 
 	win_width = w;
 	win_height = h;
@@ -140,6 +163,8 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'f': {
 			cout << "Fill mode is now " << (fill_mode ? "off" : "on") << "\n";
 			fill_mode = not fill_mode;
+
+			// canvas->drawing.draw_array();
 		}
 		break;
 
@@ -149,7 +174,7 @@ void keyboard(unsigned char key, int x, int y) {
 				if (canvas->drawing) {
 					// Draw the polygon, then clear polygon_points
 					polygon_t poly(polygon_points, pen);
-					poly.draw();
+					poly.draw(canvas->array);
 					polygon_points.clear();
 					glFlush();
 				}
@@ -177,6 +202,33 @@ void keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
+		// Toggle fill mode or pen attributes
+		// depending on whether fill mode is
+		// active or not
+		case 'c': {
+			if (fill_mode) {
+				cout << "Enter new fill attributes\n";
+				int r; cout << "R: "; cin >> r;
+				int g; cout << "G: "; cin >> g;
+				int b; cout << "B: "; cin >> b;
+				color_t fill_c(r, g, b);
+				fill_t new_fill(fill_c, false);
+				fill_object = new_fill;
+				cout << "Fill attributes modified\n";
+			}
+			else {
+				cout << "Enter new pen attributes\n";
+				int r; cout << "R: "; cin >> r;
+				int g; cout << "G: "; cin >> g;
+				int b; cout << "B: "; cin >> b;
+				color_t pen_c(r, g, b);
+				float s; cout << "Size: "; cin >> s;
+				pen_t new_pen(pen_c, s, false);
+				pen = new_pen;
+				cout << "Pen attributes modified\n";
+			}
+		}
+
 	}
 }
 
@@ -185,25 +237,18 @@ void mouse(int button, int state, int x, int y) {
 		if (state == GLUT_DOWN) {
 			if (button == GLUT_DOWN) { // Line drawing mode active
 				if (line_drawing_mode) {
-
-
-					// Then get ready to draw lines
 					if (num_points == 0) {
 						first_point.set(x, win_height-y);
 					}
-					else if (num_points == 1){
+					else if (num_points == 1) {
 						line_t curr_line(first_point.x, first_point.y, x, win_height-y, pen);
-						curr_line.draw();
+						canvas->drawing->lines.push_back(curr_line);
+						curr_line.draw(canvas->array);
 					}
 					num_points = 1 - num_points;				
 				}
 				else { // Polygon drawing mode active
 					point_t clicked(x, win_height-y);
-					// if (polygon_points.size() >= 1) {
-					// 	point_t last_point = polygon_points.back();
-					// 	polygon_points.push_back(clicked);
-					// 	line_t recent(clicked, last_point, pen);
-					// 	recent.draw();
 					polygon_points.push_back(clicked);
 				}
 			}
@@ -212,16 +257,14 @@ void mouse(int button, int state, int x, int y) {
 	glFlush();
 }
 
+
 int main(int argc, char* argv[]) {
 	cout << "Welcome to myDraw!\n";
-
-	cout << "Enter window dimensions:\n";
-	cout << "Width: "; cin >> win_width;
-	cout << "Height: "; cin >> win_height;
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
 	glutInitWindowSize(win_width, win_height);
+	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)-win_width)/2, (glutGet(GLUT_SCREEN_HEIGHT)-win_height)/2);
 
 	window_id = glutCreateWindow("myDraw");
 

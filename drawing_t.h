@@ -14,10 +14,14 @@ public:
 	drawing_t() {
 	}
 
-	void draw() {
-		for (list<line_t>::iterator itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw();
-		for (list<polygon_t>::iterator itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw();
+	void draw(pen_t** arr) {
+		for (list<line_t>::iterator itr = lines.begin() ; itr != lines.end() ; itr++) itr->draw(arr);
+		for (list<polygon_t>::iterator itr = polygons.begin() ; itr != polygons.end() ; itr++) itr->draw(arr);
 	}
+
+	// void draw_array(pen_t** arr) {
+	// 	for (int x = 0 ; x < )
+	// }
 
 	void save() {
 
