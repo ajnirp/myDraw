@@ -92,9 +92,22 @@ void save_drawing(drawing_t* d) {
 
 	// Save the polygons
 	list<polygon_t>::iterator pgn_itr;
-	for (pgn_itr = d->polygons.begin(); pgn_itr != d->polygons.end(); pgn_itr++) {
-		
+	for (pgn_itr = d->polygons.begin() ; pgn_itr != d->polygons.end() ; pgn_itr++) {
+		cout << "polygon\n";
+		draw_file << "P ";
+		// Print each point to the file
+		list<point_t>::iterator itr;
+		for (itr = pgn_itr->vertices.begin() ; itr != pgn_itr->vertices.end() ; itr++) {
+			draw_file << itr->x << " "
+			          << itr->y << " ";
+		}
+		draw_file << pgn_itr->border.size << " "
+		          << (int)pgn_itr->border.color.red << " "
+		          << (int)pgn_itr->border.color.green << " "
+		          << (int)pgn_itr->border.color.blue << "\n";
 	}
+
+	draw_file.close();
 
 	cout << "Saved to file '" << filename << "'\n";
 }
@@ -211,6 +224,7 @@ void keyboard(unsigned char key, int x, int y) {
 				if (canvas->drawing) {
 					// Draw the polygon, then clear polygon_points
 					polygon_t poly(polygon_points, pen);
+					canvas->drawing->polygons.push_back(poly);
 					poly.draw(canvas->array, canvas->width, canvas->height);
 					polygon_points.clear();
 					glFlush();
