@@ -4,6 +4,8 @@
 #include "drawing_t.h"
 #include "color_t.h"
 
+class drawing_t;
+
 class canvas_t {
 public:
 	drawing_t* drawing;

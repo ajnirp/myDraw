@@ -127,7 +127,7 @@ void keyboard(unsigned char key, int x, int y) {
 				if (canvas->drawing) {
 					canvas->drawing = NULL;
 				}
-				canvas->drawing = new drawing_t();
+				canvas->drawing = new drawing_t(canvas);
 				cout << "Initialized new drawing\n";
 			}
 		}
@@ -164,7 +164,14 @@ void keyboard(unsigned char key, int x, int y) {
 			cout << "Fill mode is now " << (fill_mode ? "off" : "on") << "\n";
 			fill_mode = not fill_mode;
 
-			// canvas->drawing.draw_array();
+			if (fill_mode) {
+				canvas->drawing->draw_array(canvas->array);
+				glutPostRedisplay();
+			}
+			else {
+				canvas->drawing->draw(canvas->array);
+				glutPostRedisplay();
+			}
 		}
 		break;
 
