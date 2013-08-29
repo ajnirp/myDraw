@@ -3,6 +3,8 @@
 
 #include "drawing_t.h"
 #include "color_t.h"
+#include "pen_t.h"
+#include "fill_t.h"
 
 class drawing_t;
 
@@ -12,6 +14,7 @@ public:
 	int width;
 	int height;
 	color_t bg_color;
+	//pen_t pen;
 
 	color_t** array;
 
@@ -20,11 +23,12 @@ public:
 		height = h;
 
 		// Allocate memory for the array and clear it
+		bg_color = bg_c;
 		array = new color_t*[width];
 		for (int i = 0 ; i < width ; i++) array[i] = new color_t[height];
 		clear();
 
-		bg_color = bg_c;
+		
 		drawing = d;
 	}
 
@@ -35,6 +39,7 @@ public:
 			}
 		}
 	}
+
 };
 
 #endif

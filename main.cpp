@@ -19,10 +19,12 @@ int window_id;
 // Drawing modes
 bool line_drawing_mode = true;
 bool fill_mode = false;
+bool polygon_drawing_mode = false;
 
 int num_points = 0;
 point_t first_point;
 list<point_t> polygon_points;
+list<point_t> fill_points;
 
 color_t black(0, 0, 0);
 pen_t pen(black, 2, false);
@@ -46,7 +48,7 @@ void mouse(int, int, int, int);
 void make_new_canvas() {
 	if (!canvas) {
 		color_t bg_c = read_rgb();
-
+		//color_t bgcd(255,255,255);
 		canvas = new canvas_t(win_width, win_height, bg_c, NULL);
 
 		int r = bg_c.red;
@@ -113,10 +115,31 @@ void save_drawing(drawing_t* d) {
 }
 
 // Load a drawing object into d
-void load_drawing(drawing_t* d) {
-	string filename;
+// When passed to the function, d is NULL
+void load_drawing(canvas_t* canvas) {
 	cout << "Enter drawing file to load: ./drawings/";
-	cin >> filename;
+	string filename; cin >> filename;
+	filename = "drawings/" + filename;
+
+	canvas->drawing = new drawing_t(canvas);
+
+	ifstream draw_file;
+	string line;
+	// draw_file.open(filename);
+	// if (draw_file.is_open()) {
+	// 	while (draw_file.good()) {
+	// 		if (line[0] == 'L') {
+
+	// 		}
+	// 		else if (line[0] == 'P') {
+				
+	// 		}
+	// 	}
+	// }
+
+	// draw_file.close();
+
+	cout << "Loaded drawing from file '" << filename << "'\n";
 }
 
 color_t read_rgb() {
@@ -195,7 +218,7 @@ void keyboard(unsigned char key, int x, int y) {
 					cout << "Destroying current drawing... ";
 					canvas->drawing = NULL;
 				}
-				load_drawing(canvas->drawing);
+				load_drawing(canvas);
 			}
 			else {
 				cerr << "ERROR: No canvas to load to. Make a new canvas by pressing 'n'\n";
@@ -207,6 +230,14 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'f': {
 			cout << "Fill mode is now " << (fill_mode ? "off" : "on") << "\n";
 			fill_mode = not fill_mode;
+			if(fill_mode) {
+				polygon_drawing_mode = false;
+				line_drawing_mode = false;
+			}
+			else {
+				line_drawing_mode = true;
+				polygon_drawing_mode = false;
+			}
 
 			if (fill_mode) {
 				canvas->drawing->draw_array();
@@ -240,6 +271,8 @@ void keyboard(unsigned char key, int x, int y) {
 		case '2': {
 			if (canvas) {
 				line_drawing_mode = false;
+				polygon_drawing_mode = true;
+				fill_mode = false;
 				cout << "Polygon drawing mode on\n";	
 			}
 		}
@@ -263,8 +296,7 @@ void keyboard(unsigned char key, int x, int y) {
 				int g; cout << "G: "; cin >> g;
 				int b; cout << "B: "; cin >> b;
 				color_t fill_c(r, g, b);
-				fill_t new_fill(fill_c, false);
-				fill_object = new_fill;
+				fill_object.color_1 = fill_c;
 				cout << "Fill attributes modified\n";
 			}
 			else {
@@ -298,9 +330,16 @@ void mouse(int button, int state, int x, int y) {
 					}
 					num_points = 1 - num_points;				
 				}
-				else { // Polygon drawing mode active
+				else if(polygon_drawing_mode){ // Polygon drawing mode active
 					point_t clicked(x, win_height-y);
 					polygon_points.push_back(clicked);
+				}
+				else {
+					point_t clicked(x, win_height-y);
+					fill_points.push_back(clicked);
+					fill_object.draw(clicked, canvas->array, canvas->bg_color);
+					cout<<"Fill attributes are: "<<(int)fill_object.color_1.red<<","<<(int)fill_object.color_1.blue<<","<<(int)fill_object.color_1.green<<endl;
+					canvas->drawing->draw_array();
 				}
 			}
 		}
