@@ -95,10 +95,10 @@ void save_drawing(drawing_t* d) {
 	list<polygon_t>::iterator pgn_itr;
 	for (pgn_itr = d->polygons.begin() ; pgn_itr != d->polygons.end() ; pgn_itr++) {
 		draw_file << "P ";
-		draw_file << pgn_itr->border.size << " "
-		          << (int)pgn_itr->border.color.red << " "
+		draw_file << (int)pgn_itr->border.color.red << " "
 		          << (int)pgn_itr->border.color.green << " "
-		          << (int)pgn_itr->border.color.blue << " ";
+		          << (int)pgn_itr->border.color.blue << " "
+				  << pgn_itr->border.size << " ";
 		// Print each point to the file
 		list<point_t>::iterator itr;
 		list<point_t>::iterator itr_next = pgn_itr->vertices.begin();
@@ -129,26 +129,36 @@ void load_drawing(canvas_t* canvas) {
 	if (load_file.is_open()) {
 		while (load_file.good()) {
 			getline(load_file, line);
-			if (line[0] == 'L') {
-				vector<string> tokens;
-				string buffer;
-				stringstream ss(line);
+			vector<string> tokens;
+			string buffer;
+			stringstream ss(line);
+			if (line[0] == 'L' or line[0] == 'P') {
 				while (ss >> buffer) tokens.push_back(buffer);
+				// read the pen color and size
 				color_t c(atoi(tokens[1].c_str()),
 					      atoi(tokens[2].c_str()),
 					      atoi(tokens[3].c_str()));
 				float s = atoi(tokens[4].c_str());
 				pen_t p(c, s, false);
-				line_t l(atoi(tokens[5].c_str()),
-					     atoi(tokens[6].c_str()),
-					     atoi(tokens[7].c_str()),
-					     atoi(tokens[8].c_str()),
-					     p);
-				canvas->drawing->lines.push_back(l);
-			}
-			else if (line[0] == 'P') {
-			}
-			else {
+				// now parse the points
+				if (line[0] == 'L') {
+					line_t l(atoi(tokens[5].c_str()),
+						     atoi(tokens[6].c_str()),
+						     atoi(tokens[7].c_str()),
+						     atoi(tokens[8].c_str()),
+						     p);
+					canvas->drawing->lines.push_back(l);
+				}
+				else if (line[0] == 'P') {
+					list<point_t> verts;
+					for (unsigned int i = 5 ; i+1 < tokens.size() ; i += 2) {
+						point_t pt(atoi(tokens[i].c_str()),
+						          atoi(tokens[i+1].c_str()));
+						verts.push_back(pt);
+					}
+					polygon_t poly(verts, p);
+					canvas->drawing->polygons.push_back(poly);
+				}
 			}
 		}
 	}
@@ -247,12 +257,9 @@ void keyboard(unsigned char key, int x, int y) {
 			cout << "Fill mode is now " << (fill_mode ? "off" : "on") << "\n";
 			fill_mode = not fill_mode;
 
-			if (fill_mode) {
-				canvas->drawing->draw_array();
-			}
-			else {
-				canvas->drawing->draw();
-			}
+			glClear(GL_COLOR_BUFFER_BIT);
+			if (fill_mode) canvas->drawing->draw_array();
+			else canvas->drawing->draw();
 			glFlush();
 		}
 		break;
