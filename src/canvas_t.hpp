@@ -3,6 +3,8 @@
 
 #include "drawing_t.hpp"
 #include "color_t.hpp"
+#include "pen_t.hpp"
+#include "fill_t.hpp"
 
 class drawing_t;
 
@@ -19,12 +21,12 @@ public:
 		width = w;
 		height = h;
 
+		bg_color = bg_c;
 		// Allocate memory for the array and clear it
 		array = new color_t*[width];
 		for (int i = 0 ; i < width ; i++) array[i] = new color_t[height];
 		clear();
 
-		bg_color = bg_c;
 		drawing = d;
 	}
 

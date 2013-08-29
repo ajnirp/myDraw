@@ -19,7 +19,7 @@ TARGETexe     = myDraw
 
 # Project Paths
 INSTALL_PATH  =$(PROJECT_ROOT)/bin
-PROJECT_ROOT  =/host/Academic/5/cs475/assignments/test
+PROJECT_ROOT  =/host/Academic/5/cs475/assignments/myDraw
 SRCDIR        =$(PROJECT_ROOT)/src
 OBJDIR        =$(PROJECT_ROOT)/obj
 BINDIR        =$(PROJECT_ROOT)/bin
@@ -96,7 +96,6 @@ setup:
 	@$(ECHO) "Setting up the compilation..."
 	@mkdir -p obj
 	@mkdir -p bin
-	@mkdir -p drw
 	@$(ECHO) "Done setting up."
 	
 clean:
@@ -104,7 +103,5 @@ clean:
 	@$(PRINTF) "$(MESG_COLOR)Removing: $(FILE_COLOR)obj"; $(RM) -rf obj
 	@$(PRINTF) "                   $(OK_COLOR)[OK]$(NO_COLOR)"; $(ECHO)
 	@$(PRINTF) "$(MESG_COLOR)Removing: $(FILE_COLOR)bin"; $(RM) -rf bin
-	@$(PRINTF) "                   $(OK_COLOR)[OK]$(NO_COLOR)"; $(ECHO)
-	@$(PRINTF) "$(MESG_COLOR)Removing: $(FILE_COLOR)drw"; $(RM) -rf drw
 	@$(PRINTF) "                   $(OK_COLOR)[OK]$(NO_COLOR)"; $(ECHO)
 	@$(PRINTF) "All removed, done."; $(ECHO)

@@ -20,14 +20,16 @@ int window_id;
 // Drawing modes
 bool line_drawing_mode = true;
 bool fill_mode = false;
+bool polygon_drawing_mode = false;
 
 int num_points = 0;
 point_t first_point;
 list<point_t> polygon_points;
+list<point_t> fill_points;
 
 color_t black(0, 0, 0);
 pen_t pen(black, 2, false);
-fill_t fill_object(black, false);
+fill_t fill_object(black, black, false);
 
 canvas_t* canvas = NULL;
 
@@ -73,7 +75,7 @@ void save_drawing(drawing_t* d) {
 	cout << "Enter filename to save to (no spaces): ";
 	string filename; cin >> filename;
 	// add code to check for invalid filename characters like '/'
-	filename = "drawings/" + filename;
+	filename = "drw/" + filename;
 	ofstream draw_file;
 	draw_file.open(filename.c_str());
 
@@ -117,62 +119,70 @@ void save_drawing(drawing_t* d) {
 // Load a drawing object into d
 // When passed to the function, d is NULL
 void load_drawing(canvas_t* canvas) {
-	cout << "Enter drawing file to load: ./drawings/";
+	cout << "Enter drawing file to load: ./drw/";
 	string filename; cin >> filename;
-	filename = "drawings/" + filename;
+	filename = "drw/" + filename;
 
 	canvas->drawing = new drawing_t(canvas);
 
 	string line;
 	ifstream load_file;
-	load_file.open(filename.c_str());
-	if (load_file.is_open()) {
-		while (load_file.good()) {
-			getline(load_file, line);
-			vector<string> tokens;
-			string buffer;
-			stringstream ss(line);
-			if (line[0] == 'L' or line[0] == 'P') {
-				while (ss >> buffer) tokens.push_back(buffer);
-				// read the pen color and size
-				color_t c(atoi(tokens[1].c_str()),
-					      atoi(tokens[2].c_str()),
-					      atoi(tokens[3].c_str()));
-				float s = atoi(tokens[4].c_str());
-				pen_t p(c, s, false);
-				// now parse the points
-				if (line[0] == 'L') {
-					line_t l(atoi(tokens[5].c_str()),
-						     atoi(tokens[6].c_str()),
-						     atoi(tokens[7].c_str()),
-						     atoi(tokens[8].c_str()),
-						     p);
-					canvas->drawing->lines.push_back(l);
-				}
-				else if (line[0] == 'P') {
-					list<point_t> verts;
-					for (unsigned int i = 5 ; i+1 < tokens.size() ; i += 2) {
-						point_t pt(atoi(tokens[i].c_str()),
-						          atoi(tokens[i+1].c_str()));
-						verts.push_back(pt);
+	try {
+		load_file.open(filename.c_str());
+		if (load_file.is_open()) {
+			while (load_file.good()) {
+				getline(load_file, line);
+				vector<string> tokens;
+				string buffer;
+				stringstream ss(line);
+				if (line[0] == 'L' or line[0] == 'P') {
+					while (ss >> buffer) tokens.push_back(buffer);
+					// read the pen color and size
+					color_t c(atoi(tokens[1].c_str()),
+						      atoi(tokens[2].c_str()),
+						      atoi(tokens[3].c_str()));
+					float s = atoi(tokens[4].c_str());
+					pen_t p(c, s, false);
+					// now parse the points
+					if (line[0] == 'L') {
+						line_t l(atoi(tokens[5].c_str()),
+							     atoi(tokens[6].c_str()),
+							     atoi(tokens[7].c_str()),
+							     atoi(tokens[8].c_str()),
+							     p);
+						canvas->drawing->lines.push_back(l);
 					}
-					polygon_t poly(verts, p);
-					canvas->drawing->polygons.push_back(poly);
+					else if (line[0] == 'P') {
+						list<point_t> verts;
+						for (unsigned int i = 5 ; i+1 < tokens.size() ; i += 2) {
+							point_t pt(atoi(tokens[i].c_str()),
+							          atoi(tokens[i+1].c_str()));
+							verts.push_back(pt);
+						}
+						polygon_t poly(verts, p);
+						canvas->drawing->polygons.push_back(poly);
+					}
 				}
 			}
 		}
+		// if the file does not exist, throw an error
+		else {
+			throw "File not found";
+		}
+		cout << "Loaded drawing from file '" << filename << "'\n";
+		load_file.close();
+		glClear(GL_COLOR_BUFFER_BIT);
+		if (fill_mode) canvas->drawing->draw_array();
+		else canvas->drawing->draw();
 	}
-	if (fill_mode) canvas->drawing->draw_array();
-	else canvas->drawing->draw();
+	catch (const char* err) {
+		cerr << "ERROR: " << err << "\n";
+	}
 	glFlush();
-
-	// draw_file.close();
-
-	cout << "Loaded drawing from file '" << filename << "'\n";
 }
 
 color_t read_rgb() {
-	ifstream canvas_file("config/canvas.cfg");
+	ifstream canvas_file("cfg/canvas.cfg");
 	string line;
 	int r, g, b;
 	if (canvas_file.is_open()) {
@@ -257,6 +267,15 @@ void keyboard(unsigned char key, int x, int y) {
 			cout << "Fill mode is now " << (fill_mode ? "off" : "on") << "\n";
 			fill_mode = not fill_mode;
 
+			if(fill_mode) {
+				polygon_drawing_mode = false;
+				line_drawing_mode = false;
+			}
+			else {
+				line_drawing_mode = true;
+				polygon_drawing_mode = false;
+			}
+
 			glClear(GL_COLOR_BUFFER_BIT);
 			if (fill_mode) canvas->drawing->draw_array();
 			else canvas->drawing->draw();
@@ -268,6 +287,10 @@ void keyboard(unsigned char key, int x, int y) {
 		case '1': {
 			if (canvas) {
 				if (canvas->drawing) {
+					line_drawing_mode = true;
+					polygon_drawing_mode = false;
+					fill_mode = false;
+					
 					// Draw the polygon, then clear polygon_points
 					polygon_t poly(polygon_points, pen);
 					canvas->drawing->polygons.push_back(poly);
@@ -286,6 +309,8 @@ void keyboard(unsigned char key, int x, int y) {
 		case '2': {
 			if (canvas) {
 				line_drawing_mode = false;
+				polygon_drawing_mode = true;
+				fill_mode = false;
 				cout << "Polygon drawing mode on\n";	
 			}
 		}
@@ -305,13 +330,33 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'c': {
 			if (fill_mode) {
 				cout << "Enter new fill attributes\n";
-				int r; cout << "R: "; cin >> r;
-				int g; cout << "G: "; cin >> g;
-				int b; cout << "B: "; cin >> b;
-				color_t fill_c(r, g, b);
-				fill_t new_fill(fill_c, false);
-				fill_object = new_fill;
-				cout << "Fill attributes modified\n";
+				cout<<"Mode (Checker = 0 or normal = 1): "<<endl;
+				int mode; cin >> mode;
+				if (mode == 1) {
+					int r; cout << "R: "; cin >> r;
+					int g; cout << "G: "; cin >> g;
+					int b; cout << "B: "; cin >> b;
+					color_t fill_c(r, g, b);
+					fill_object.color_1 = fill_c;
+					fill_object.checker_mode = false;
+					cout << "Fill attributes modified\n";
+				}
+				else if (mode == 0) {
+					cout<<"First color"<<endl;
+					int r; cout << "R: "; cin >> r;
+					int g; cout << "G: "; cin >> g;
+					int b; cout << "B: "; cin >> b;
+					color_t fill_c(r, g, b);
+					fill_object.color_1 = fill_c;
+					cout<<"Second color"<<endl;
+					cout << "R: "; cin >> r;
+					cout << "G: "; cin >> g;
+					cout << "B: "; cin >> b;
+					color_t fill_b(r,g,b);
+					fill_object.color_2 = fill_b;
+					fill_object.checker_mode = true;
+					cout << "Fill attributes modified\n";
+				}
 			}
 			else {
 				cout << "Enter new pen attributes\n";
@@ -344,9 +389,16 @@ void mouse(int button, int state, int x, int y) {
 					}
 					num_points = 1 - num_points;				
 				}
-				else { // Polygon drawing mode active
+				else if (polygon_drawing_mode) { // Polygon drawing mode active
 					point_t clicked(x, win_height-y);
 					polygon_points.push_back(clicked);
+				}
+				else {
+					point_t clicked(x, win_height-y);
+					fill_points.push_back(clicked);
+					fill_object.draw(clicked, canvas->array, canvas->bg_color);
+					canvas->drawing->draw_array();
+
 				}
 			}
 		}

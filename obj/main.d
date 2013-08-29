@@ -1,5 +1,5 @@
-/host/Academic/5/cs475/assignments/test/obj/main.o: \
- /host/Academic/5/cs475/assignments/test/src/main.cpp \
+/host/Academic/5/cs475/assignments/myDraw/obj/main.o: \
+ /host/Academic/5/cs475/assignments/myDraw/src/main.cpp \
  /usr/include/c++/4.7/iostream \
  /usr/include/x86_64-linux-gnu/c++/4.7/./bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/4.7/./bits/os_defines.h \
@@ -102,15 +102,15 @@
  /usr/include/GL/glext.h /usr/include/inttypes.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.7/include/stdint.h /usr/include/stdint.h \
  /usr/include/GL/glu.h \
- /host/Academic/5/cs475/assignments/test/src/required.hpp \
- /host/Academic/5/cs475/assignments/test/src/color_t.hpp \
- /host/Academic/5/cs475/assignments/test/src/point_t.hpp \
- /host/Academic/5/cs475/assignments/test/src/pen_t.hpp \
- /host/Academic/5/cs475/assignments/test/src/line_t.hpp \
- /host/Academic/5/cs475/assignments/test/src/polygon_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/required.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/color_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/point_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/pen_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/line_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/polygon_t.hpp \
  /usr/include/c++/4.7/list /usr/include/c++/4.7/bits/stl_list.h \
  /usr/include/c++/4.7/bits/list.tcc \
- /host/Academic/5/cs475/assignments/test/src/fill_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/fill_t.hpp \
  /usr/include/c++/4.7/queue /usr/include/c++/4.7/deque \
  /usr/include/c++/4.7/bits/stl_construct.h \
  /usr/include/c++/4.7/ext/alloc_traits.h \
@@ -122,5 +122,5 @@
  /usr/include/c++/4.7/bits/vector.tcc \
  /usr/include/c++/4.7/bits/stl_heap.h \
  /usr/include/c++/4.7/bits/stl_queue.h \
- /host/Academic/5/cs475/assignments/test/src/drawing_t.hpp \
- /host/Academic/5/cs475/assignments/test/src/canvas_t.hpp
+ /host/Academic/5/cs475/assignments/myDraw/src/drawing_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/canvas_t.hpp
