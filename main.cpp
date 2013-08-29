@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <string>
 #include <cmath>
-#include <GL/glut.h>
+#include <GLUT/glut.h>
 
 #include "required.h"
 
@@ -28,7 +28,7 @@ list<point_t> fill_points;
 
 color_t black(0, 0, 0);
 pen_t pen(black, 2, false);
-fill_t fill_object(black, false);
+fill_t fill_object(black, black, false);
 
 canvas_t* canvas = NULL;
 
@@ -292,12 +292,34 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'c': {
 			if (fill_mode) {
 				cout << "Enter new fill attributes\n";
-				int r; cout << "R: "; cin >> r;
-				int g; cout << "G: "; cin >> g;
-				int b; cout << "B: "; cin >> b;
-				color_t fill_c(r, g, b);
-				fill_object.color_1 = fill_c;
-				cout << "Fill attributes modified\n";
+				cout<<"Mode (Checker = 0 or normal = 1): "<<endl;
+				int t;
+				cin>>t;
+				if(t==1){
+					int r; cout << "R: "; cin >> r;
+					int g; cout << "G: "; cin >> g;
+					int b; cout << "B: "; cin >> b;
+					color_t fill_c(r, g, b);
+					fill_object.color_1 = fill_c;
+					fill_object.checker_mode = false;
+					cout << "Fill attributes modified\n";
+				}
+				else if(t==0){
+					cout<<"First color"<<endl;
+					int r; cout << "R: "; cin >> r;
+					int g; cout << "G: "; cin >> g;
+					int b; cout << "B: "; cin >> b;
+					color_t fill_c(r, g, b);
+					fill_object.color_1 = fill_c;
+					cout<<"Second color"<<endl;
+					cout << "R: "; cin >> r;
+					cout << "G: "; cin >> g;
+					cout << "B: "; cin >> b;
+					color_t fill_b(r,g,b);
+					fill_object.color_2 = fill_b;
+					fill_object.checker_mode = true;
+					cout << "Fill attributes modified\n";
+				}
 			}
 			else {
 				cout << "Enter new pen attributes\n";
@@ -338,7 +360,7 @@ void mouse(int button, int state, int x, int y) {
 					point_t clicked(x, win_height-y);
 					fill_points.push_back(clicked);
 					fill_object.draw(clicked, canvas->array, canvas->bg_color);
-					cout<<"Fill attributes are: "<<(int)fill_object.color_1.red<<","<<(int)fill_object.color_1.blue<<","<<(int)fill_object.color_1.green<<endl;
+					//cout<<"Fill attributes are: "<<(int)fill_object.color_1.red<<","<<(int)fill_object.color_1.blue<<","<<(int)fill_object.color_1.green<<endl;
 					canvas->drawing->draw_array();
 				}
 			}

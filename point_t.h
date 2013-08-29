@@ -3,7 +3,7 @@
 
 #include "pen_t.h"
 #include "color_t.h"
-#include <GL/glut.h>
+#include <GLUT/glut.h>
 
 #include <iostream>
 using namespace std;
