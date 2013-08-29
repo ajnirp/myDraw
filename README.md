@@ -1,7 +1,7 @@
 myDraw
 ======
 
-Simple drawing tool using OpenGL and GLUT. Made by Anirudh Vemula and me for the first assignment of our Computer Graphics course. The exact problem statement can be found in the A1.pdf file.
+Simple drawing tool using OpenGL and GLUT. Made by Anirudh Vemula and me for the first assignment of our Computer Graphics course. The exact problem statement can be found in the problem-statement.pdf file.
 
 Hostel Room Drawing
 -------------------
