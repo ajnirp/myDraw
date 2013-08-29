@@ -207,7 +207,7 @@ void load_drawing(canvas_t* canvas) {
 						}
 						else {
 							color_t black(0, 0, 0);
-							fill_t normal_fill(c1, black, true);
+							fill_t normal_fill(c1, black, false);
 							frag.fill = normal_fill;
 						}
 						frag.point = pt;
@@ -350,11 +350,13 @@ void keyboard(unsigned char key, int x, int y) {
 					fill_mode = false;
 
 					// Draw the polygon, then clear polygon_points
-					polygon_t poly(polygon_points, pen);
-					canvas->drawing->polygons.push_back(poly);
-					poly.draw(canvas->array, canvas->width, canvas->height);
-					polygon_points.clear();
-					glFlush();
+					if (polygon_points.size() > 2) {
+						polygon_t poly(polygon_points, pen);
+						canvas->drawing->polygons.push_back(poly);
+						poly.draw(canvas->array, canvas->width, canvas->height);
+						polygon_points.clear();
+						glFlush();
+					}
 				}
 				
 				line_drawing_mode = true;
@@ -450,6 +452,7 @@ void keyboard(unsigned char key, int x, int y) {
 				polygon_points.clear();
 				glClear(GL_COLOR_BUFFER_BIT);
 				glFlush();
+				cout << "Cleared the canvas\n";
 			}
 		}
 	}
