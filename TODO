@@ -1,5 +1,3 @@
-make changes to save_drawing and load_drawing to accomodate file names with spaces in them
-
-hostel room!!!!
-
-report!!!!
+1 Make changes to save_drawing() and load_drawing() to accomodate file names that contain spaces
+2 Figure out why Anirudh's Mac is rendering weirdly.
+3 Try to make it so that the window width and height are also configurable from the config file. Currently GLUT seems to take over before the config file can be read from the main() function.

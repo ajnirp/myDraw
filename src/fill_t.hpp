@@ -75,14 +75,22 @@ public:
 					//else(!t) {array[x][y] = color_2;}
 					if((a<16 && b<16) || (a>=16 && b>=16)) array[x][y] = color_1;
 					else array[x][y] = color_2;
-					point_t* nextx1 = new point_t(x+1,y);
-					point_t* nextx0 = new point_t(x-1,y);
-					point_t* nexty1 = new point_t(x,y+1);
-					point_t* nexty0 = new point_t(x,y-1);
-					points.push(nextx1);
-					points.push(nextx0);
-					points.push(nexty1);
-					points.push(nexty0);
+					if (x+1 < w) {
+						point_t* nextx1 = new point_t(x+1,y);
+						points.push(nextx1);
+					}
+					if (x-1 > -1) {
+						point_t* nextx0 = new point_t(x-1,y);
+						points.push(nextx0);
+					}
+					if (y+1 < h) {
+						point_t* nexty1 = new point_t(x,y+1);
+						points.push(nexty1);
+					}
+					if (y-1 > -1) {
+						point_t* nexty0 = new point_t(x,y-1);
+						points.push(nexty0);
+					}
 				}
 			}
 		}
