@@ -11,6 +11,8 @@ The hostel room drawing is in `drw/hostel-room`.
 Installation
 ------------
 
+OpenGL and g++ are required. We used g++ v4.7.3 Once you have those two:
+
 1 Download this repo
 2 Unzip
 3 `cd myDraw`
