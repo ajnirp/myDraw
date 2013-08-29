@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <string>
 #include <cmath>
@@ -80,31 +81,32 @@ void save_drawing(drawing_t* d) {
 	list<line_t>::iterator l_itr;
 	for (l_itr = d->lines.begin(); l_itr != d->lines.end(); l_itr++) {
 		draw_file << "L "
+		          << (int)l_itr->pen.color.red << " "
+		          << (int)l_itr->pen.color.green << " "
+		          << (int)l_itr->pen.color.blue << " "
+		          << l_itr->pen.size << " "
 		          << l_itr->v0.x << " "
 		          << l_itr->v0.y << " "
 		          << l_itr->v1.x << " "
-		          << l_itr->v1.y << " "
-		          << l_itr->pen.size << " "
-		          << (int)l_itr->pen.color.red << " "
-		          << (int)l_itr->pen.color.green << " "
-		          << (int)l_itr->pen.color.blue << "\n";
+		          << l_itr->v1.y << "\n";
 	}
 
 	// Save the polygons
 	list<polygon_t>::iterator pgn_itr;
 	for (pgn_itr = d->polygons.begin() ; pgn_itr != d->polygons.end() ; pgn_itr++) {
-		cout << "polygon\n";
 		draw_file << "P ";
-		// Print each point to the file
-		list<point_t>::iterator itr;
-		for (itr = pgn_itr->vertices.begin() ; itr != pgn_itr->vertices.end() ; itr++) {
-			draw_file << itr->x << " "
-			          << itr->y << " ";
-		}
 		draw_file << pgn_itr->border.size << " "
 		          << (int)pgn_itr->border.color.red << " "
 		          << (int)pgn_itr->border.color.green << " "
-		          << (int)pgn_itr->border.color.blue << "\n";
+		          << (int)pgn_itr->border.color.blue << " ";
+		// Print each point to the file
+		list<point_t>::iterator itr;
+		list<point_t>::iterator itr_next = pgn_itr->vertices.begin();
+		for (itr = pgn_itr->vertices.begin() ; itr != pgn_itr->vertices.end() ; itr++) {
+			itr_next++;
+			draw_file << itr->x << " "
+			          << itr->y << (itr_next == pgn_itr->vertices.end() ? "\n" : " ");
+		}
 	}
 
 	draw_file.close();
@@ -113,10 +115,50 @@ void save_drawing(drawing_t* d) {
 }
 
 // Load a drawing object into d
-void load_drawing(drawing_t* d) {
-	string filename;
+// When passed to the function, d is NULL
+void load_drawing(canvas_t* canvas) {
 	cout << "Enter drawing file to load: ./drawings/";
-	cin >> filename;
+	string filename; cin >> filename;
+	filename = "drawings/" + filename;
+
+	canvas->drawing = new drawing_t(canvas);
+
+	string line;
+	ifstream load_file;
+	load_file.open(filename.c_str());
+	if (load_file.is_open()) {
+		while (load_file.good()) {
+			getline(load_file, line);
+			if (line[0] == 'L') {
+				vector<string> tokens;
+				string buffer;
+				stringstream ss(line);
+				while (ss >> buffer) tokens.push_back(buffer);
+				color_t c(atoi(tokens[1].c_str()),
+					      atoi(tokens[2].c_str()),
+					      atoi(tokens[3].c_str()));
+				float s = atoi(tokens[4].c_str());
+				pen_t p(c, s, false);
+				line_t l(atoi(tokens[5].c_str()),
+					     atoi(tokens[6].c_str()),
+					     atoi(tokens[7].c_str()),
+					     atoi(tokens[8].c_str()),
+					     p);
+				canvas->drawing->lines.push_back(l);
+			}
+			else if (line[0] == 'P') {
+			}
+			else {
+			}
+		}
+	}
+	if (fill_mode) canvas->drawing->draw_array();
+	else canvas->drawing->draw();
+	glFlush();
+
+	// draw_file.close();
+
+	cout << "Loaded drawing from file '" << filename << "'\n";
 }
 
 color_t read_rgb() {
@@ -191,11 +233,8 @@ void keyboard(unsigned char key, int x, int y) {
 		// Load drawing
 		case 'l': {
 			if (canvas) {
-				if (canvas->drawing) {
-					cout << "Destroying current drawing... ";
-					canvas->drawing = NULL;
-				}
-				load_drawing(canvas->drawing);
+				if (canvas->drawing) canvas->drawing = NULL;
+				load_drawing(canvas);
 			}
 			else {
 				cerr << "ERROR: No canvas to load to. Make a new canvas by pressing 'n'\n";

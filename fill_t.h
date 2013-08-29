@@ -7,6 +7,7 @@ class fill_t {
 public:
 	bool checker_mode;
 	color_t color_1;
+	color_t color_2;
 
 	fill_t() {
 		color_t black(0, 0, 0);
@@ -20,7 +21,7 @@ public:
 	}
 
 	// start = point where user clicked. The fill begins from there
-	void draw(point_t start) {
+	void draw(point_t start, color_t** arr) {
 		if (not checker_mode) {
 
 		}

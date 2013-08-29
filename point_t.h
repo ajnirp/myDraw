@@ -39,8 +39,10 @@ public:
 		glBegin(GL_POINTS);
 		for (int xx = 0 ; xx < pen.size ; xx++) {
 			for (int yy = 0 ; yy < pen.size ; yy++) {
-				glVertex2f(x+xx, y+yy);
-				arr[x+xx][y+yy] = pen.color;
+				if (x+xx < arr_w and y+yy < arr_h and x+xx > -1 and y+yy > -1) {
+					glVertex2f(x+xx, y+yy);
+					arr[x+xx][y+yy] = pen.color;
+				}
 			}
 		}
 		glEnd();
