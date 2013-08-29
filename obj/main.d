@@ -123,4 +123,5 @@
  /usr/include/c++/4.7/bits/stl_heap.h \
  /usr/include/c++/4.7/bits/stl_queue.h \
  /host/Academic/5/cs475/assignments/myDraw/src/drawing_t.hpp \
- /host/Academic/5/cs475/assignments/myDraw/src/canvas_t.hpp
+ /host/Academic/5/cs475/assignments/myDraw/src/canvas_t.hpp \
+ /host/Academic/5/cs475/assignments/myDraw/src/fragment_t.hpp

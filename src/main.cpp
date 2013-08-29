@@ -25,7 +25,7 @@ bool polygon_drawing_mode = false;
 int num_points = 0;
 point_t first_point;
 list<point_t> polygon_points;
-list<point_t> fill_points;
+list<fragment_t> fill_points;
 
 color_t black(0, 0, 0);
 pen_t pen(black, 2, false);
@@ -76,13 +76,13 @@ void save_drawing(drawing_t* d) {
 	string filename; cin >> filename;
 	// add code to check for invalid filename characters like '/'
 	filename = "drw/" + filename;
-	ofstream draw_file;
-	draw_file.open(filename.c_str());
+	ofstream save_file;
+	save_file.open(filename.c_str());
 
 	// Save the lines
 	list<line_t>::iterator l_itr;
 	for (l_itr = d->lines.begin(); l_itr != d->lines.end(); l_itr++) {
-		draw_file << "L "
+		save_file << "L "
 		          << (int)l_itr->pen.color.red << " "
 		          << (int)l_itr->pen.color.green << " "
 		          << (int)l_itr->pen.color.blue << " "
@@ -96,8 +96,8 @@ void save_drawing(drawing_t* d) {
 	// Save the polygons
 	list<polygon_t>::iterator pgn_itr;
 	for (pgn_itr = d->polygons.begin() ; pgn_itr != d->polygons.end() ; pgn_itr++) {
-		draw_file << "P ";
-		draw_file << (int)pgn_itr->border.color.red << " "
+		save_file << "P ";
+		save_file << (int)pgn_itr->border.color.red << " "
 		          << (int)pgn_itr->border.color.green << " "
 		          << (int)pgn_itr->border.color.blue << " "
 				  << pgn_itr->border.size << " ";
@@ -106,12 +106,30 @@ void save_drawing(drawing_t* d) {
 		list<point_t>::iterator itr_next = pgn_itr->vertices.begin();
 		for (itr = pgn_itr->vertices.begin() ; itr != pgn_itr->vertices.end() ; itr++) {
 			itr_next++;
-			draw_file << itr->x << " "
+			save_file << itr->x << " "
 			          << itr->y << (itr_next == pgn_itr->vertices.end() ? "\n" : " ");
 		}
 	}
 
-	draw_file.close();
+	// Save the fill fragments
+	list<fragment_t>::iterator f_itr;
+	for (f_itr = fill_points.begin() ; f_itr != fill_points.end() ; f_itr++) {
+		save_file << "F "
+		          << (f_itr->fill.checker_mode ? "C " : "N ") // C = checkermode, N = normal
+		          << f_itr->point.x << " " << f_itr->point.y << " "
+		          << (int)f_itr->fill.color_1.red << " "
+		          << (int)f_itr->fill.color_1.green << " "
+		          << (int)f_itr->fill.color_1.blue;
+		if (f_itr->fill.checker_mode) {
+			save_file << " "
+			          << (int)f_itr->fill.color_2.red << " "
+			          << (int)f_itr->fill.color_2.green << " "
+			          << (int)f_itr->fill.color_2.blue;
+		}
+		save_file << "\n";
+	}
+
+	save_file.close();
 
 	cout << "Saved to file '" << filename << "'\n";
 }
@@ -290,7 +308,7 @@ void keyboard(unsigned char key, int x, int y) {
 					line_drawing_mode = true;
 					polygon_drawing_mode = false;
 					fill_mode = false;
-					
+
 					// Draw the polygon, then clear polygon_points
 					polygon_t poly(polygon_points, pen);
 					canvas->drawing->polygons.push_back(poly);
@@ -330,7 +348,7 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'c': {
 			if (fill_mode) {
 				cout << "Enter new fill attributes\n";
-				cout<<"Mode (Checker = 0 or normal = 1): "<<endl;
+				cout<<"Mode (Checker = 0 or normal = 1): ";
 				int mode; cin >> mode;
 				if (mode == 1) {
 					int r; cout << "R: "; cin >> r;
@@ -359,18 +377,29 @@ void keyboard(unsigned char key, int x, int y) {
 				}
 			}
 			else {
-				cout << "Enter new pen attributes\n";
-				int r; cout << "R: "; cin >> r;
-				int g; cout << "G: "; cin >> g;
-				int b; cout << "B: "; cin >> b;
-				color_t pen_c(r, g, b);
-				float s; cout << "Size: "; cin >> s;
-				pen_t new_pen(pen_c, s, false);
-				pen = new_pen;
-				cout << "Pen attributes modified\n";
+				cout << "Mode (Eraser = 0 or normal = 1): ";
+				int pen_mode; cin >> pen_mode;
+
+				if (pen_mode == 1) {
+					cout << "Enter new pen attributes\n";
+					int r; cout << "R: "; cin >> r;
+					int g; cout << "G: "; cin >> g;
+					int b; cout << "B: "; cin >> b;
+					color_t pen_c(r, g, b);
+					float s; cout << "Size: "; cin >> s;
+					pen_t new_pen(pen_c, s, false);
+					pen = new_pen;
+					cout << "Pen attributes modified\n";
+				}
+				else {
+					int er_size; cout << "Enter eraser size: "; cin >> er_size;
+					pen_t new_pen(canvas->bg_color, er_size, true);
+					pen = new_pen;
+					cout << "Pen attributes modified\n";
+				}
 			}
 		}
-
+		break;
 	}
 }
 
@@ -395,17 +424,16 @@ void mouse(int button, int state, int x, int y) {
 				}
 				else {
 					point_t clicked(x, win_height-y);
-					fill_points.push_back(clicked);
+					fragment_t frag; frag.point = clicked; frag.fill = fill_object;
+					fill_points.push_back(frag);
 					fill_object.draw(clicked, canvas->array, canvas->bg_color);
 					canvas->drawing->draw_array();
-
 				}
 			}
 		}
 	}
 	glFlush();
 }
-
 
 int main(int argc, char* argv[]) {
 	cout << "Welcome to myDraw!\n";

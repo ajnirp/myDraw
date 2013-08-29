@@ -6,7 +6,7 @@ Simple drawing tool using OpenGL and GLUT. Made by Anirudh Vemula and me for the
 Hostel Room Drawing
 -------------------
 
-The hostel room drawing is in "$(myDraw_directory)/drawings/hostelroom".
+The hostel room drawing is in "drw/hostelroom".
 
 
 Saving and Loading
