@@ -80,7 +80,7 @@ public:
 
 		if (y0 < y1) ystep = 1; else ystep = -1;
 
-		for (int x=x0; x < x1; x++) {
+		for (int x=x0; x <= x1; x++) {
 			if (steep) {
 				point_t p(y, x);
 				p.draw(pen, arr, arr_w, arr_h);

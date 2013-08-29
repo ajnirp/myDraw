@@ -13,8 +13,8 @@ using namespace std;
 /* Global vars */
 
 // Window Parameters
-int win_width = 800;
-int win_height = 640;
+int win_width = 1024;
+int win_height = 768;
 int window_id;
 
 // Drawing modes
@@ -142,14 +142,19 @@ void load_drawing(canvas_t* canvas) {
 	filename = "drw/" + filename;
 
 	canvas->drawing = new drawing_t(canvas);
+	for (int x = 0 ; x < canvas->width ; x++) {
+		for (int y = 0 ; y < canvas->height ; y++) {
+			canvas->array[x][y] = canvas->bg_color;
+		}
+	}
 
 	string line;
 	ifstream load_file;
 	try {
 		load_file.open(filename.c_str());
+		fill_points.clear();
 		if (load_file.is_open()) {
-			// list<fragment_t> fill_pts;
-			fill_points.clear();
+			cout << "Reading from file...\n";
 			while (load_file.good()) {
 				getline(load_file, line); // read a line
 				vector<string> tokens;    // vector to store the space-split tokens
@@ -258,7 +263,6 @@ color_t read_rgb() {
 /* Callbacks */
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
-	/* Test code here */
 	glFlush();
 }
 
@@ -312,6 +316,7 @@ void keyboard(unsigned char key, int x, int y) {
 		case 'l': {
 			if (canvas) {
 				if (canvas->drawing) canvas->drawing = NULL;
+				polygon_points.clear();
 				load_drawing(canvas);
 			}
 			else {
@@ -481,6 +486,7 @@ void mouse(int button, int state, int x, int y) {
 					point_t clicked(x, win_height-y);
 					fragment_t frag; frag.point = clicked; frag.fill = fill_object;
 					fill_points.push_back(frag);
+					glClear(GL_COLOR_BUFFER_BIT);
 					fill_object.draw(clicked, canvas->array, canvas->width, canvas->height, canvas->bg_color);
 					canvas->drawing->draw_array();
 				}
