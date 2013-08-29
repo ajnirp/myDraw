@@ -12,7 +12,7 @@ public:
 
 	pen_t() {
 		color_t black(0, 0, 0);
-		pen_t(black, 2.0, false);
+		pen_t(black, 3.0, false);
 	}
 
 	pen_t(color_t c, float s = 2.0, bool er = false) {

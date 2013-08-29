@@ -28,7 +28,7 @@ list<point_t> polygon_points;
 list<fragment_t> fill_points;
 
 color_t black(0, 0, 0);
-pen_t pen(black, 2, false);
+pen_t pen(black, 3, false);
 fill_t fill_object(black, black, false);
 
 canvas_t* canvas = NULL;
@@ -148,12 +148,14 @@ void load_drawing(canvas_t* canvas) {
 	try {
 		load_file.open(filename.c_str());
 		if (load_file.is_open()) {
+			// list<fragment_t> fill_pts;
+			fill_points.clear();
 			while (load_file.good()) {
-				getline(load_file, line);
-				vector<string> tokens;
+				getline(load_file, line); // read a line
+				vector<string> tokens;    // vector to store the space-split tokens
 				string buffer;
 				stringstream ss(line);
-				if (line[0] == 'L' or line[0] == 'P') {
+				if (line[0] == 'L' or line[0] == 'P' or line[0] == 'F') {
 					while (ss >> buffer) tokens.push_back(buffer);
 					// read the pen color and size
 					color_t c(atoi(tokens[1].c_str()),
@@ -161,7 +163,8 @@ void load_drawing(canvas_t* canvas) {
 						      atoi(tokens[3].c_str()));
 					float s = atoi(tokens[4].c_str());
 					pen_t p(c, s, false);
-					// now parse the points
+
+					// Load the lines
 					if (line[0] == 'L') {
 						line_t l(atoi(tokens[5].c_str()),
 							     atoi(tokens[6].c_str()),
@@ -170,6 +173,8 @@ void load_drawing(canvas_t* canvas) {
 							     p);
 						canvas->drawing->lines.push_back(l);
 					}
+
+					// Load polygons
 					else if (line[0] == 'P') {
 						list<point_t> verts;
 						for (unsigned int i = 5 ; i+1 < tokens.size() ; i += 2) {
@@ -180,18 +185,53 @@ void load_drawing(canvas_t* canvas) {
 						polygon_t poly(verts, p);
 						canvas->drawing->polygons.push_back(poly);
 					}
+
+					// Load fill fragments
+					else if (line[0] == 'F') {
+						
+						point_t pt(atoi(tokens[2].c_str()),
+							       atoi(tokens[3].c_str()));
+
+						color_t c1(atoi(tokens[4].c_str()),
+							      atoi(tokens[5].c_str()),
+							      atoi(tokens[6].c_str()));
+
+						string fill_type = tokens[1];
+						fragment_t frag;
+						if (fill_type == "C") {
+							color_t c2(atoi(tokens[7].c_str()),
+									   atoi(tokens[8].c_str()),
+									   atoi(tokens[9].c_str()));
+							fill_t checker_fill(c1, c2, true);
+							frag.fill = checker_fill;
+						}
+						else {
+							color_t black(0, 0, 0);
+							fill_t normal_fill(c1, black, true);
+							frag.fill = normal_fill;
+						}
+						frag.point = pt;
+						fill_points.push_back(frag);
+					}
 				}
 			}
+			glClear(GL_COLOR_BUFFER_BIT);
+			canvas->drawing->draw();
+			list<fragment_t>::iterator fr_itr;
+			for (fr_itr = fill_points.begin() ; fr_itr != fill_points.end() ; fr_itr++) {
+				fill_object = fr_itr->fill;
+				fill_object.draw(fr_itr->point, canvas->array, canvas->width, canvas->height, canvas->bg_color);
+			}
 		}
+
 		// if the file does not exist, throw an error
 		else {
 			throw "File not found";
 		}
 		cout << "Loaded drawing from file '" << filename << "'\n";
 		load_file.close();
-		glClear(GL_COLOR_BUFFER_BIT);
+
 		if (fill_mode) canvas->drawing->draw_array();
-		else canvas->drawing->draw();
 	}
 	catch (const char* err) {
 		cerr << "ERROR: " << err << "\n";
@@ -400,6 +440,18 @@ void keyboard(unsigned char key, int x, int y) {
 			}
 		}
 		break;
+
+		// Clear the canvas
+		case 'r': {
+			if (canvas) {
+				canvas->drawing = NULL;
+				canvas->clear();
+				fill_points.clear();
+				polygon_points.clear();
+				glClear(GL_COLOR_BUFFER_BIT);
+				glFlush();
+			}
+		}
 	}
 }
 
@@ -426,7 +478,7 @@ void mouse(int button, int state, int x, int y) {
 					point_t clicked(x, win_height-y);
 					fragment_t frag; frag.point = clicked; frag.fill = fill_object;
 					fill_points.push_back(frag);
-					fill_object.draw(clicked, canvas->array, canvas->bg_color);
+					fill_object.draw(clicked, canvas->array, canvas->width, canvas->height, canvas->bg_color);
 					canvas->drawing->draw_array();
 				}
 			}
