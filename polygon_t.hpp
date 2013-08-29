@@ -1,7 +1,7 @@
 #include <list>
-#include "point_t.h"
-#include "color_t.h"
-#include "fill_t.h"
+#include "point_t.hpp"
+#include "color_t.hpp"
+#include "fill_t.hpp"
 
 #ifndef _POLYGON_T_H_
 #define _POLYGON_T_H_

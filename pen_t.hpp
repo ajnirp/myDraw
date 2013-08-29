@@ -1,7 +1,7 @@
 #ifndef _PEN_T_H_
 #define _PEN_T_H_
 
-#include "color_t.h"
+#include "color_t.hpp"
 
 class pen_t {
 public:

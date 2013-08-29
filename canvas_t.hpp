@@ -1,8 +1,8 @@
 #ifndef _CANVAS_T_H_
 #define _CANVAS_T_H_
 
-#include "drawing_t.h"
-#include "color_t.h"
+#include "drawing_t.hpp"
+#include "color_t.hpp"
 
 class drawing_t;
 

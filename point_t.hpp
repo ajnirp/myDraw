@@ -1,8 +1,8 @@
 #ifndef _POINT_T_H_
 #define _POINT_T_H_
 
-#include "pen_t.h"
-#include "color_t.h"
+#include "pen_t.hpp"
+#include "color_t.hpp"
 #include <GL/glut.h>
 
 #include <iostream>

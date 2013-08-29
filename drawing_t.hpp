@@ -2,10 +2,10 @@
 #define _DRAWING_T_H_
 
 #include <list>
-#include "point_t.h"
-#include "canvas_t.h"
-#include "line_t.h"
-#include "polygon_t.h"
+#include "point_t.hpp"
+#include "canvas_t.hpp"
+#include "line_t.hpp"
+#include "polygon_t.hpp"
 
 // class canvas_t;
 

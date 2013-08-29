@@ -2,9 +2,9 @@
 #define _LINE_T_H_
 
 #include <cmath>
-#include "point_t.h"
-#include "pen_t.h"
-#include "color_t.h"
+#include "point_t.hpp"
+#include "pen_t.hpp"
+#include "color_t.hpp"
 
 class line_t {
 private:
