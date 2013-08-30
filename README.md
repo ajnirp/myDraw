@@ -48,6 +48,8 @@ Saving and Loading
 
 3 When you first load an image, you will be shown only the lines and borders of the polygons in that image. To see the image in all its colourful glory, press `f`.
 
+4 Sometimes you don't want to load a new image but merely start afresh. Press `r` to clear the canvas, then `d` to start a new drawing.
+
 Configuration
 -------------
 
