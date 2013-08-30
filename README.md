@@ -13,23 +13,20 @@ Installation
 
 OpenGL and g++ are required. We used g++ v4.7.3 Once you have those two:
 
-1 Download this repo
-
-2 Unzip
-
-3 `cd myDraw`
+1. Download this repo
+2. Unzip
+3. `cd myDraw`
 
 Running
 -------
 
-1 `make`
-
-2 `./bin/myDraw`
+1. `make`
+2. `./bin/myDraw`
 
 Cleaning Up
 -----------
 
-1 `make clean`
+1. `make clean`
 
 Quick Walkthrough
 -----------------
@@ -45,45 +42,42 @@ In polygon drawing mode, you can click on as many points as you want. When you'r
 Saving and Loading
 ------------------
 
-1 If you want to save the current drawing, press `s` and the drawing will be saved to a file. If you try to load a drawing by pressing `l` the current drawing will be discarded and your unsaved work will be lost. Each time you save you will be asked to specify the file you want to save to. If the file already exists, it will be overwritten. If it doesn't, it will be created and stored in the `drw` folder.
-
-2 Whenever you type in a file to load (or save), the path is relative to `drw`. For example, typing `my-drawing` searches for a file in `drw/my-drawing`.
-
-3 When you first load an image, you will be shown only the lines and borders of the polygons in that image. To see the image in all its colourful glory, press `f`.
-
-4 Sometimes you don't want to load a new image but merely start afresh. Press `r` to clear the canvas, then `d` to start a new drawing.
+1. If you want to save the current drawing, press `s` and the drawing will be saved to a file. If you try to load a drawing by pressing `l` the current drawing will be discarded and your unsaved work will be lost. Each time you save you will be asked to specify the file you want to save to. If the file already exists, it will be overwritten. If it doesn't, it will be created and stored in the `drw` folder.
+2. Whenever you type in a file to load (or save), the path is relative to `drw`. For example, typing `my-drawing` searches for a file in `drw/my-drawing`.
+3. When you first load an image, you will be shown only the lines and borders of the polygons in that image. To see the image in all its colourful glory, press `f`.
+4. Sometimes you don't want to load a new image but merely start afresh. Press `r` to clear the canvas, then `d` to start a new drawing.
 
 Configuration
 -------------
 
 To change the size of the drawing window:
 
-1 Open `main.cpp` in any text editor
-2 Change the lines
+1. Open `main.cpp` in any text editor
+2. Change the lines
 
     int win_width = 1024;
     int win_height = 768;
 
 to whatever values you want.
-3 Re-compile with `make`
+3. Re-compile with `make`
 
 To change the default background color:
 
-1 Open `cfg/canvas.cfg` in any text editor
-2 Change the RGB values to whatever you want
+1. Open `cfg/canvas.cfg` in any text editor
+2. Change the RGB values to whatever you want
 
 Credits
 -------
 
 All of the code was written entirely by the two of us, except for the following parts:
 
-1 The line drawing algorithm in `line_t.hpp` is a modified version of the **Bresenham Line Drawing Algorithm demo code** given to us in class
-2 `Makefile` is a modified version of the Makefile in the **Rube Goldberg Machine Simulation base code** given to us in the **Software and Systems Lab** course
+1. The line drawing algorithm in `line_t.hpp` is a modified version of the **Bresenham Line Drawing Algorithm demo code** given to us in class
+2. `Makefile` is a modified version of the Makefile in the **Rube Goldberg Machine Simulation base code** given to us in the **Software and Systems Lab** course
 
 Roadmap
 -------
 
-1 Add support for different shapes, like circles
+1. Add support for different shapes, like circles
 
 License
 -------
