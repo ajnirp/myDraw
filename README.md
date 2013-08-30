@@ -3,6 +3,11 @@ myDraw
 
 Simple drawing tool using OpenGL and GLUT. Made by [Anirudh Vemula](vvanirudh@gmail.com) and [Rohan Prinja](rohan.prinja@gmail.com) for the first assignment of our [Computer Graphics](http://www.cse.iitb.ac.in/~paragc/teaching/2013/cs475) course. The exact problem statement can be found in the `problem-statement.pdf` file in the root directory of this repo.
 
+Link to Report
+--------------
+
+The report can be found [here](http://www.cse.iitb.ac.in/~rohanp/mydraw.html).
+
 Hostel Room Drawing
 -------------------
 
